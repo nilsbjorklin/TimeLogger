@@ -1,28 +1,30 @@
 package com.time_logger;
 
+import java.text.DateFormatSymbols;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class LoggingData {
     private final static Calendar calendar = new GregorianCalendar();
 
-    private final static String FILE_LOCATION = "C:/projects/timelog." + calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + ".log";
+    private final static String FILE_LOCATION = String.format("C:/projects/timelog.%d-%s.log", calendar.get(Calendar.YEAR) , calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
 
     public static void printCurrent() {
-        print(Integer.toString(calendar.get(Calendar.MONTH)));
+        print(calendar.get(Calendar.MONTH));
     }
 
-    public static void print(String month) {
+    public static void print(int month) {
         String fileName = FILE_LOCATION;
         try {
-            fileName = FILE_LOCATION.replaceAll("-.*", "-" + Integer.toString(Integer.parseInt(month)) + ".log");
+            fileName = FILE_LOCATION.replaceAll("-.*", "-" + new DateFormatSymbols(Locale.US).getMonths()[month] + ".log");
         } catch (Exception exception) {
             System.err.println("Invalid month");
         }
+        System.out.println(fileName);
         try {
-            System.out.println("Printing month " + calendar.get(Calendar.MONTH));
+            System.out.printf("Printing month %s.%n", calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
             List<LogPost> posts = FileController.readFile(fileName).stream().map(line -> new LogPost(line)).collect(Collectors.toList());
-            posts.sort((LogPost o1, LogPost o2) -> o1.category.compareTo(o2.category));
+            posts.sort(Comparator.comparing(LogPost::getCategory));
             HashMap<String, Double> categories = new HashMap<>();
             double total = 0;
             for (LogPost post : posts) {
@@ -67,8 +69,8 @@ public class LoggingData {
     }
 
     static class LogPost {
-        private String category, description;
-        private int hours, minutes, dayOfMonth, month, year;
+        private String category, description, month;
+        private int hours, minutes, dayOfMonth, year;
 
         LogPost(String arg) {
             this(Arrays.copyOfRange(arg.split(","), 1, arg.split(",").length));
@@ -76,7 +78,7 @@ public class LoggingData {
 
         LogPost(String... args) {
             dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-            month = calendar.get(Calendar.MONTH) + 1;
+            month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US);
             year = calendar.get(Calendar.YEAR);
             hours = Integer.parseInt(args[0]);
             int index = 1;
@@ -91,13 +93,15 @@ public class LoggingData {
                 description = Arrays.stream(descArr).collect(Collectors.joining(" "));
             }
         }
-
+        public String getCategory(){
+            return category;
+        }
         public String getEvent() {
-            return String.format("%d-%d-%d, (%s) %d hours and %d minutes, description: %s.", year, month, dayOfMonth, category, hours, minutes , description);
+            return String.format("%d-%s-%d, (%s) %d hours and %d minutes, description: %s.", year, month, dayOfMonth, category, hours, minutes , description);
         }
 
         public String eventAdded() {
-            return String.format("Added %d hours and %d minutes to date %d-%d-%d for category %s.", hours, minutes, year, month, dayOfMonth, category);
+            return String.format("Added %d hours and %d minutes to date %d-%s-%d for category %s.", hours, minutes, year, month, dayOfMonth, category);
         }
 
         @Override

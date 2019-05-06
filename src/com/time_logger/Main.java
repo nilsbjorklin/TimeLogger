@@ -13,7 +13,7 @@ public class Main {
             switch (firstArg.orElse("default")) {
                 case "print":
                     if (args.length > 1) {
-                        data.print(args[1]);
+                        data.print(Integer.parseInt(args[1]));
                     } else {
                         data.printCurrent();
                     }
