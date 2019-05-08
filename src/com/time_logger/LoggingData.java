@@ -1,39 +1,32 @@
 package com.time_logger;
 
 import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class LoggingData {
-    private final static Calendar calendar = new GregorianCalendar();
+class LoggingData {
 
-    private final static String FILE_LOCATION = String.format("C:/projects/timelog.%d-%s.log", calendar.get(Calendar.YEAR) , calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
+    private final static String FILE_LOCATION = "C:/projects/timelog.%s.log";
 
-    public static void printCurrent() {
-        print(calendar.get(Calendar.MONTH));
-    }
-
-    public static void print(int month) {
-        String fileName = FILE_LOCATION;
+    void print(PrintProperties props) {
+        String fileName = String.format(FILE_LOCATION, props.getFileSuffix());
         try {
-            fileName = FILE_LOCATION.replaceAll("-.*", "-" + new DateFormatSymbols(Locale.US).getMonths()[month] + ".log");
-        } catch (Exception exception) {
-            System.err.println("Invalid month");
-        }
-        System.out.println(fileName);
-        try {
-            System.out.printf("Printing month %s.%n", calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US));
-            List<LogPost> posts = FileController.readFile(fileName).stream().map(line -> new LogPost(line)).collect(Collectors.toList());
-            posts.sort(Comparator.comparing(LogPost::getCategory));
+            System.out.printf("Printing month %s from file %s.%n", new DateFormatSymbols(Locale.US).getMonths()[props.date.get(Calendar.MONTH)], fileName);
+            List<LogPost> posts = FileController.readFile(fileName).stream().map(LogPost::new).collect(Collectors.toList());
+            if (props.order.equals(Order.CATEGORY))
+                posts.sort(Comparator.comparing(LogPost::getCategory).thenComparing(LogPost::getDate));
+            if (props.order.equals(Order.DATE))
+                posts.sort(Comparator.comparing(LogPost::getDate).thenComparing(LogPost::getCategory));
             HashMap<String, Double> categories = new HashMap<>();
             double total = 0;
             for (LogPost post : posts) {
-                double time = post.hours + (double) post.minutes / 60;
+                double time = post.getHours() + (double) post.getMinutes() / 60;
                 total += time;
-                if (categories.containsKey(post.category)) {
-                    time += categories.get(post.category);
+                if (categories.containsKey(post.getCategory())) {
+                    time += categories.get(post.getCategory());
                 }
-                categories.put(post.category, time);
+                categories.put(post.getCategory(), time);
                 System.out.println(post.getEvent());
             }
             categories.entrySet();
@@ -48,69 +41,71 @@ public class LoggingData {
         }
     }
 
-    public void add(String[] args) {
+    PrintProperties getPrintProperties() {
+        return new PrintProperties();
+    }
+
+    void add(LogPost post) {
         try {
-            LogPost post = new LogPost(Arrays.copyOfRange(args, 1, args.length));
-            FileController.writeToFile(post.toString(), FILE_LOCATION);
+            FileController.writeToFile(post.toString(), String.format(FILE_LOCATION, post.getDate().substring(0, post.getDate().lastIndexOf("-"))));
             System.out.println(post.eventAdded());
         } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
-    public void dateAdd(String[] args){
-        try {
-            LogPost post = new LogPost(Arrays.copyOfRange(args, 2, args.length));
-            FileController.writeToFile(post.toString(), FILE_LOCATION);
-            System.out.println(post.eventAdded());
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
 
+    enum Order {
+        CATEGORY,
+        DATE
     }
 
-    static class LogPost {
-        private String category, description, month;
-        private int hours, minutes, dayOfMonth, year;
+    class PrintProperties {
+        private Calendar date = Calendar.getInstance(TimeZone.getDefault(), Locale.US);
+        private Order order = Order.DATE;
 
-        LogPost(String arg) {
-            this(Arrays.copyOfRange(arg.split(","), 1, arg.split(",").length));
-        }
-
-        LogPost(String... args) {
-            dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-            month = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.US);
-            year = calendar.get(Calendar.YEAR);
-            hours = Integer.parseInt(args[0]);
-            int index = 1;
-            if (args.length > index) {
-                if (args[index].matches("\\d+")) {
-                    minutes = Integer.parseInt(args[index++]);
-                } else {
-                    minutes = 0;
-                }
-                category = args[index++].toLowerCase();
-                String[] descArr = Arrays.copyOfRange(args, index, args.length);
-                description = Arrays.stream(descArr).collect(Collectors.joining(" "));
+        void month(String monthString) {
+            try {
+                setMonth(Integer.parseInt(monthString) - 1);
+            } catch (Exception exception) {
+                System.err.printf("%s is not a valid month.%n", monthString);
             }
         }
-        public String getCategory(){
-            return category;
+        String getFileSuffix(){
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
+            return simpleDateFormat.format(date.getTime());
         }
-        public String getEvent() {
-            return String.format("%d-%s-%d, (%s) %d hours and %d minutes, description: %s.", year, month, dayOfMonth, category, hours, minutes , description);
-        }
-
-        public String eventAdded() {
-            return String.format("Added %d hours and %d minutes to date %d-%s-%d for category %s.", hours, minutes, year, month, dayOfMonth, category);
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%s,%s,%s,%s,%s", buildDate(), hours, minutes, category, description);
+        void year(String yearString) {
+            try {
+                setYear(Integer.parseInt(yearString));
+            } catch (Exception exception) {
+                System.err.printf("%s is not a valid year.%n", yearString);
+            }
         }
 
-        private String buildDate() {
-            return String.format("%s-%s-%s", year, month, dayOfMonth);
+        void order(String orderString) {
+            try {
+                this.order = Order.valueOf(orderString.toUpperCase());
+            } catch (Exception exception) {
+                System.err.printf("It's not possible to order results by %s.%n", orderString);
+
+            }
+        }
+
+        private void setMonth(int monthInt) {
+            if (monthInt < 0 || monthInt > 11) {
+                throw new IllegalArgumentException();
+            } else {
+                date.set(Calendar.MONTH, monthInt);
+            }
+        }
+
+        private void setYear(int yearInt) {
+            if (yearInt < date.get(Calendar.YEAR) - 1 || yearInt > date.get(Calendar.YEAR)) {
+                throw new IllegalArgumentException();
+            } else {
+                date.set(Calendar.YEAR, yearInt);
+            }
         }
     }
+
 }

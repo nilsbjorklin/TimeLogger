@@ -3,8 +3,8 @@ package com.time_logger;
 import java.io.*;
 import java.util.*;
 
-public class FileController {
-    public static List<String> readFile(String filePath) throws FileNotFoundException {
+class FileController {
+    static List<String> readFile(String filePath) throws FileNotFoundException {
         File file = new File(filePath);
         if (file.exists()) {
             Scanner s = new Scanner(file);
@@ -19,7 +19,7 @@ public class FileController {
         }
     }
 
-    public static void writeToFile(String line, String filePath) throws IOException {
+    static void writeToFile(String line, String filePath) throws IOException {
         File file = new File(filePath);
         System.out.println(file.getAbsolutePath());
         if (file.exists()) {
