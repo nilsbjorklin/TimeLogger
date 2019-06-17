@@ -1,48 +1,51 @@
 package com.time_logger;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Locale;
 
-class LogPost {
-    enum Category{
-        INCIDENT,
-        MICROSERVICE,
-        MIGRATION,
-        OTHER
-    }
+public class LogPost implements Serializable {
+    private String id;
     private String date;
     private StringBuilder description = null;
     private Category category = Category.OTHER;
     private int hours = 0, minutes = 0;
 
-    LogPost(String arg) {
+    public LogPost(String arg) {
         String[] args = arg.split(",");
-        date(args[0]);
-        hours(args[1]);
-        minutes(args[2]);
-        category(args[3]);
-        for (int i = 4; i < args.length; i++) {
+        id(args[0]);
+        date(args[1]);
+        hours(args[2]);
+        minutes(args[3]);
+        category(args[4]);
+        for (int i = 5; i < args.length; i++) {
             description(args[i]);
         }
     }
 
-    LogPost() {
-        LocalDateTime localDateTime = LocalDateTime.now().plusDays(1);
+    public LogPost() {
+        id(Long.toHexString(System.currentTimeMillis() / 1000));
+        LocalDateTime localDateTime = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH);
         date = format.format(localDateTime);
     }
 
-    void description(String word){
-        if(description == null)
+    public void description(String word) {
+        if (description == null) {
             description = new StringBuilder(word);
-        else{
+        } else {
             description.append(" " + word);
         }
     }
-    void date(String dateString) {
+
+    public void id(String idString) {
+        this.id = idString;
+    }
+
+    public void date(String dateString) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             sdf.parse(dateString);
@@ -52,7 +55,7 @@ class LogPost {
         }
     }
 
-    void hours(String hoursString) {
+    public void hours(String hoursString) {
         try {
             this.hours += Integer.parseInt(hoursString);
         } catch (Exception exception) {
@@ -60,7 +63,7 @@ class LogPost {
         }
     }
 
-    void category(String categoryString){
+    public void category(String categoryString) {
         try {
             category = Category.valueOf(categoryString.toUpperCase());
         } catch (Exception exception) {
@@ -68,7 +71,7 @@ class LogPost {
         }
     }
 
-    void minutes(String minutesString) {
+    public void minutes(String minutesString) {
         try {
             this.minutes += Integer.parseInt(minutesString);
             if (this.minutes > 59) {
@@ -80,36 +83,55 @@ class LogPost {
         }
     }
 
-    String getDescription(){
-        return description.toString();
+    public String getDescription() {
+        if (description != null) {
+            return description.toString();
+        } else {
+            return null;
+        }
     }
 
-    int getHours() {
+    public String getId() {
+        return id;
+    }
+
+    public int getHours() {
         return hours;
     }
 
-    int getMinutes() {
+    public int getMinutes() {
         return minutes;
     }
 
-    String getCategory() {
+    public String getCategory() {
         return category.name();
     }
 
-    String getEvent() {
-        return String.format("%s, (%s) %d hours and %d minutes, description: %s.", getDate(), getCategory(), getHours(), getMinutes(), getDescription());
+    public String getEvent() {
+        return String.format("[%s] %s, (%s) %d hours and %d minutes, description: %s", getId(), getDate(), getCategory(), getHours(), getMinutes(), getDescription());
     }
 
-    String getDate() {
+    public String getDate() {
         return date;
     }
 
-    String eventAdded() {
-        return String.format("Added %d hours and %d minutes to date %s for category %s.", getHours(), getMinutes(), getDate(), getCategory());
+    public String eventAdded() {
+        return String.format("Added event(%s) %d hours and %d minutes to date %s for category %s.", getId(), getHours(), getMinutes(), getDate(), getCategory());
+    }
+
+    public String eventChanged() {
+        return String.format("Change event(%s) to %d hours and %d minutes to date %s for category %s.", getId(), getHours(), getMinutes(), getDate(), getCategory());
     }
 
     @Override
     public String toString() {
-        return String.format("%s,%s,%s,%s,%s", getDate(), getHours(), getMinutes(), getCategory(), getDescription());
+        return String.format("%s, %s,%s,%s,%s,%s", getId(), getDate(), getHours(), getMinutes(), getCategory(), getDescription());
+    }
+
+    enum Category {
+        INCIDENT,
+        MICROSERVICE,
+        MIGRATION,
+        OTHER
     }
 }
