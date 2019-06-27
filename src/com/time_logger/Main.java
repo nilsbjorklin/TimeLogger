@@ -14,10 +14,7 @@ public class Main {
     static PrintLog data = new PrintLog();
 
     public static void main(String[] args) throws Exception {
-        DateContainer cont = new DateContainer();
-        cont.setSuffix("2019-02-05");
-        System.out.println(cont.getFileSuffix());
-        /*List<Argument> arguments = new ArrayList<>();
+        List<Argument> arguments = new ArrayList<>();
         arguments.add(new Add());
         arguments.add(new Print());
         arguments.add(new Change());
@@ -58,7 +55,7 @@ public class Main {
                     System.err.printf("Argument '%s' not found.%n", args[0]);
                 }
             }
-        }*/
+        }
     }
 
     private static void help(List<Argument> arguments) {

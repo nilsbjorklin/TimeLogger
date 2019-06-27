@@ -28,7 +28,6 @@ public class PrintLog {
                         .map(LogPost::new)
                         .collect(Collectors.toList());
             }
-
             if (props.order.equals(Order.CATEGORY)) {
                 posts.sort(Comparator.comparing(LogPost::getCategory)
                         .thenComparing(LogPost::getDate));
