@@ -28,9 +28,7 @@ public class Print extends Argument {
 
     private class Month extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            props.month(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> props.month(arr[0]);
 
         Month() {
             super("month", "Which month to print.", "-month", "-m");
@@ -42,9 +40,7 @@ public class Print extends Argument {
 
     private class Year extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            props.year(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> props.year(arr[0]);
 
         Year() {
             super("year", "Which year the month is in.", "-year", "-y");
@@ -56,9 +52,7 @@ public class Print extends Argument {
 
     private class Order extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            props.order(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> props.order(arr[0]);
 
         Order() {
             super("order", "How the result should be ordered.", "-order", "-o");
@@ -69,9 +63,7 @@ public class Print extends Argument {
 
     private class Encoding extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            props.encoding(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> props.encoding(arr[0]);
 
         Encoding() {
             super("encoding", "Encoding type when printing from file.", "-encoding", "-e");

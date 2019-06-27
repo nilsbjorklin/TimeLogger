@@ -70,9 +70,7 @@ public class Migrate extends Argument {
 
     private class ToEncoding extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            toFormat = Properties.Encoding.valueOf(arr[0].toUpperCase());
-        };
+        Consumer<String[]> consumer = arr -> toFormat = Properties.Encoding.valueOf(arr[0].toUpperCase());
 
         ToEncoding() {
             super("to_encoding", "Encoding to migrate to.", "-toencoding", "-te");
@@ -83,9 +81,7 @@ public class Migrate extends Argument {
 
     private class FromEncoding extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            fromFormat = Properties.Encoding.valueOf(arr[0].toUpperCase());
-        };
+        Consumer<String[]> consumer = arr -> fromFormat = Properties.Encoding.valueOf(arr[0].toUpperCase());
 
         FromEncoding() {
             super("from_encoding", "Encoding to migrate from.", "-fromencoding", "-fe");
@@ -96,9 +92,7 @@ public class Migrate extends Argument {
 
     private class Date extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            dateContainer.setSuffix(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> dateContainer.setSuffix(arr[0]);
 
         Date() {
             super("date", "Date for event.", "-date", "-time");

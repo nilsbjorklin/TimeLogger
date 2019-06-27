@@ -3,10 +3,7 @@ package com.time_logger.routing;
 import com.time_logger.Properties;
 import com.time_logger.actions.ChangeLog;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -38,10 +35,8 @@ public class Change extends Argument {
 
     private class Id extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            changeLog.properties()
-                    .setId(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> changeLog.properties()
+                .setId(arr[0]);
 
         Id() {
             super("id", "Id for event.", "-id", "-i");
@@ -53,10 +48,8 @@ public class Change extends Argument {
 
     private class Date extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            changeLog.properties()
-                    .setDate(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> changeLog.properties()
+                .setDate(arr[0]);
 
         Date() {
             super("date", "Date for event.", "-date", "-time");
@@ -67,10 +60,8 @@ public class Change extends Argument {
 
     private class Hours extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            changeLog.properties()
-                    .setHours(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> changeLog.properties()
+                .setHours(arr[0]);
 
         Hours() {
             super("hours", "Amount of hours worked.", "-hours", "-h");
@@ -81,10 +72,8 @@ public class Change extends Argument {
 
     private class Minutes extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            changeLog.properties()
-                    .setMinutes(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> changeLog.properties()
+                .setMinutes(arr[0]);
 
         Minutes() {
             super("minutes", "Amount of minutes worked.", "-minutes", "-m");
@@ -95,10 +84,8 @@ public class Change extends Argument {
 
     private class Category extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            changeLog.properties()
-                    .setCategory(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> changeLog.properties()
+                .setCategory(arr[0]);
 
         Category() {
             super("category", "Category of work.", "-category", "-c");
@@ -108,11 +95,9 @@ public class Change extends Argument {
 
     private class Description extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            changeLog.properties()
-                    .setDescription(Arrays.stream(arr)
-                            .collect(Collectors.joining(" ")));
-        };
+        Consumer<String[]> consumer = arr -> changeLog.properties()
+                .setDescription(Arrays.stream(arr)
+                        .collect(Collectors.joining(" ")));
 
         Description() {
             super("description", "Description of work.", 1, 100, "-description", "-d");

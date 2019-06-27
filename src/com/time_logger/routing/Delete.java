@@ -31,8 +31,6 @@ public class Delete extends Argument {
         super.invoke();
 
         FileController controller = new FileController(String.format(FILE_LOCATION, dateContainer.getFileSuffix(), encoding.fileEnding()));
-        LogPost post = new LogPost();
-        post.id(id);
 
         List<LogPost> posts = controller.readLogPostsFromFile();
         List<LogPost> newPosts = new ArrayList<>();
@@ -48,9 +46,7 @@ public class Delete extends Argument {
 
     private class Id extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            id = arr[0];
-        };
+        Consumer<String[]> consumer = arr -> id = arr[0];
 
         Id() {
             super("id", "Id for event.", "-id", "-i");
@@ -62,9 +58,7 @@ public class Delete extends Argument {
 
     private class Date extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            dateContainer.setSuffix(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> dateContainer.setSuffix(arr[0]);
 
         Date() {
             super("date", "Date for event.", "-date", "-time");

@@ -47,9 +47,7 @@ public class Add extends Argument {
 
     private class Date extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            post.date(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> post.date(arr[0]);
 
         Date() {
             super("date", "Date for event.", "-date", "-time");
@@ -63,9 +61,7 @@ public class Add extends Argument {
 
     private class Encoding extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            encoding = Properties.Encoding.valueOf(arr[0].toUpperCase());
-        };
+        Consumer<String[]> consumer = arr -> encoding = Properties.Encoding.valueOf(arr[0].toUpperCase());
 
         Encoding() {
             super("encoding", "Encoding for event.", "-encoding", "-e");
@@ -76,9 +72,7 @@ public class Add extends Argument {
 
     private class Hours extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            post.hours(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> post.hours(arr[0]);
 
         Hours() {
             super("hours", "Amount of hours worked.", "-hours", "-h");
@@ -90,9 +84,7 @@ public class Add extends Argument {
 
     private class Minutes extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            post.minutes(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> post.minutes(arr[0]);
 
         Minutes() {
             super("minutes", "Amount of minutes worked.", "-minutes", "-m");
@@ -104,9 +96,7 @@ public class Add extends Argument {
 
     private class Category extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            post.category(arr[0]);
-        };
+        Consumer<String[]> consumer = arr -> post.category(arr[0]);
 
         Category() {
             super("category", "Category of work.", "-category", "-c");
@@ -117,10 +107,8 @@ public class Add extends Argument {
 
     private class Description extends Option {
 
-        Consumer<String[]> consumer = arr -> {
-            post.description(Arrays.stream(arr)
-                    .collect(Collectors.joining(" ")));
-        };
+        Consumer<String[]> consumer = arr -> post.description(Arrays.stream(arr)
+                .collect(Collectors.joining(" ")));
 
         Description() {
             super("description", "Description of work.", 1, 100, "-description", "-d");
