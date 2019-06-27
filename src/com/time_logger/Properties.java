@@ -2,7 +2,6 @@ package com.time_logger;
 
 public class Properties {
 
-
     public enum Encoding {
         TEXT("log"),
         OBJECT("obj");

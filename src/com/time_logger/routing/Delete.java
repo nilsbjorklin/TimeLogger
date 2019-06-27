@@ -19,7 +19,6 @@ public class Delete extends Argument {
     private DateContainer dateContainer = new DateContainer();
     private String id;
 
-
     public Delete() {
         super("delete", "deletes event");
         options.add(new Id());
@@ -35,8 +34,9 @@ public class Delete extends Argument {
         List<LogPost> posts = controller.readLogPostsFromFile();
         List<LogPost> newPosts = new ArrayList<>();
 
-        for(LogPost currentPost : posts){
-            if (!currentPost.getId().equals(id)){
+        for (LogPost currentPost : posts) {
+            if (!currentPost.getId()
+                    .equals(id)) {
                 newPosts.add(currentPost);
             }
         }

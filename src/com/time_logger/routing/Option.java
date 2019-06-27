@@ -29,24 +29,26 @@ abstract class Option {
         }
     }
 
-
     Option(String name, String description, String... commands) {
         this(name, description, 1, 1, commands);
     }
 
     List<String> getOptionInfo() {
         List<String> extraData = new ArrayList<>();
-        extraData.add("Commands: " + commandList.stream().collect(Collectors.joining(", ")));
+        extraData.add("Commands: " + commandList.stream()
+                .collect(Collectors.joining(", ")));
         extraData.add("Description: " + description);
         if (required) {
             extraData.add("Required: true");
         } else {
             extraData.add("Required: false");
             if (defaultValue != null) {
-                if (defaultValue.length == 1)
+                if (defaultValue.length == 1) {
                     extraData.add("Default: " + defaultValue[0]);
-                else
-                    extraData.add(String.format("Default: [%s]", Arrays.stream(defaultValue).collect(Collectors.joining(", "))));
+                } else {
+                    extraData.add(String.format("Default: [%s]", Arrays.stream(defaultValue)
+                            .collect(Collectors.joining(", "))));
+                }
             }
         }
         extraData.add(String.format("Regex to match: '%s'", regex));
@@ -96,7 +98,7 @@ abstract class Option {
     public void invoke(String... args) {
         if (args.length < minArguments) {
             throw new InvalidParameterException(String.format("\tTo few arguments were provided.%n\t%s arguments received for argument option '%s', minimum %s arguments must be provided.", args.length, getName(), minArguments));
-        } else if(args.length > maxArguments){
+        } else if (args.length > maxArguments) {
             throw new InvalidParameterException(String.format("\tTo many arguments were provided.%n\t%s arguments received, maximum %s arguments for option '%s'.", args.length, maxArguments, getName()));
         }
         for (String arg : args) {

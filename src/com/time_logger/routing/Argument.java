@@ -29,30 +29,35 @@ public abstract class Argument {
                         argsForCurrent.add(args[i + 1]);
                         i++;
                     }
-                    if (argsForCurrent.size() > 0)
+                    if (argsForCurrent.size() > 0) {
                         currentOption.invoke(argsForCurrent.toArray(new String[argsForCurrent.size()]));
-                    else
+                    } else {
                         currentOption.invoke();
+                    }
                 }
             }
             invoke();
-        } catch(Exception exception){
-            System.err.println(exception.getClass().getCanonicalName());
+        } catch (Exception exception) {
+            System.err.println(exception.getClass()
+                    .getCanonicalName());
             exception.printStackTrace();
         }
     }
 
     private void checkOptions() {
         for (Option option : options) {
-            if (option.isRequired())
+            if (option.isRequired()) {
                 throw new InvalidParameterException(String.format("Argument '%s' is required for action '%s'", option.getName(), getName()));
+            }
             option.useDefault();
         }
     }
 
     private Option getOption(String command) {
         for (Option option : options) {
-            if (option.getCommandList().stream().anyMatch(command::equals)) {
+            if (option.getCommandList()
+                    .stream()
+                    .anyMatch(command::equals)) {
                 return option;
             }
         }
@@ -60,7 +65,11 @@ public abstract class Argument {
     }
 
     public String getArgumentDescription() {
-        String optionsDescription = options.stream().map(option -> String.format("%s%n\t%s", option.getName(), option.getOptionInfo().stream().collect(Collectors.joining("\n\t")))).collect(Collectors.joining("\n\n"));
+        String optionsDescription = options.stream()
+                .map(option -> String.format("%s%n\t%s", option.getName(), option.getOptionInfo()
+                        .stream()
+                        .collect(Collectors.joining("\n\t"))))
+                .collect(Collectors.joining("\n\n"));
         return String.format("Argument: %s%nDescription: %s%nOptions:%n%s", name, description, optionsDescription);
     }
 

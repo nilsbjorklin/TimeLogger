@@ -59,8 +59,9 @@ public class ChangeLog {
             List<LogPost> posts = controller.readLogPostsFromFile();
             List<LogPost> newPosts = new ArrayList<>();
 
-            for(LogPost currentPost : posts){
-                if (!currentPost.getId().equals(properties.id)){
+            for (LogPost currentPost : posts) {
+                if (!currentPost.getId()
+                        .equals(properties.id)) {
                     newPosts.add(currentPost);
                 }
             }

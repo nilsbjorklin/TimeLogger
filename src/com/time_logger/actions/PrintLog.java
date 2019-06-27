@@ -15,7 +15,7 @@ public class PrintLog {
     private final static String FILE_LOCATION = "C:/projects/timelog.%s.%s";
 
     public void print(PrintProperties props) {
-        FileController controller  = new FileController(String.format(FILE_LOCATION, props.getFileSuffix(), props.getFileEnding()));
+        FileController controller = new FileController(String.format(FILE_LOCATION, props.getFileSuffix(), props.getFileEnding()));
         try {
             System.out.printf("Printing month %s from file %s.%n", new DateFormatSymbols(Locale.US).getMonths()[props.date.get(Calendar.MONTH)], controller.getFilePath());
             List<LogPost> posts;
